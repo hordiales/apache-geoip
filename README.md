@@ -1,7 +1,7 @@
 # Docker build
 
 $ docker build -t my-apache2 .
-$ docker run -dit --name my-apache-geo 8080:80 my-apache2
+$ docker run -dit --name my-apache-geo -p 8080:80 my-apache2
 
 # Only in linux
     $ sudo docker run -it --name my-apache-geo -v $PWD/public-html:/var/www/html --net="host" my-apache2
