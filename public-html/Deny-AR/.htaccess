@@ -1,0 +1,6 @@
+<IfModule mod_geoip.c>
+RewriteEngine off
+
+SetEnvIf GEOIP_COUNTRY_CODE AR BlockCountry
+Deny from env=BlockCountry
+</IfModule>

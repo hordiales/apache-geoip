@@ -1,0 +1,20 @@
+<IfModule mod_geoip.c>
+
+RewriteEngine on
+# Argentina
+RewriteCond %{ENV:GEOIP_COUNTRY_CODE} ^AR$ 
+RewriteRule ^(.*)$ /Deny-AR [L]
+
+# Colombia
+RewriteCond %{ENV:GEOIP_COUNTRY_CODE} ^CO$ 
+RewriteRule ^(.*)$ /Allow-CO [L]
+
+# USA
+RewriteCond %{ENV:GEOIP_COUNTRY_CODE} ^US$ 
+RewriteRule ^(.*)$ https://anotherurl.com [L]
+
+# Resto del mundo que no sea ni AR, ni CO
+RewriteCond %{ENV:GEOIP_COUNTRY_CODE} !^[AR|CO]$
+RewriteRule ^(.*)$ /Allow-ALL [L]
+
+</IfModule>

@@ -1,3 +1,0 @@
-SetEnvIf GEOIP_COUNTRY_CODE AR BlockCountry
-SetEnvIf GEOIP_COUNTRY_CODE VN BlockCountry
-Deny from env=BlockCountry

@@ -1,28 +1,42 @@
 # Docker build
 
-Ref: https://hub.docker.com/_/httpd
-
-
 $ docker build -t my-apache2 .
-$ docker run -dit --name my-running-app -p 8080:80 my-apache2
+$ docker run -dit --name my-apache-geo 8080:80 my-apache2
 
-# FROM httpd:2.4a
-FROM debian:stretch
-#a2enmod cmd https://github.com/docker-library/httpd/issues/135 
+# Only in linux
+    $ sudo docker run -it --name my-apache-geo -v $PWD/public-html:/var/www/html --net="host" my-apache2
+    $ docker exec -it my-apache-geo /bin/bash
 
-from debian:stretch
-https://www.digitalocean.com/community/tutorials/apache-web-server-dockerfile
+# Country CODES
 
+https://en.wikipedia.org/wiki/ISO_3166-1
 
-# GeoIP Module conf
+# htaccess rewrite rules exampls
 
-https://www.cloudbooklet.com/how-to-setup-geoip-block-using-apache/
+    <IfModule mod_geoip.c>
 
+    RewriteEngine on
+    # Argentina
+    RewriteCond %{ENV:GEOIP_COUNTRY_CODE} ^AR$ 
+    RewriteRule ^(.*)$ /Deny-AR [L]
 
-# para que preserve la IP original del request, agrego --net:host
+    # Colombia
+    RewriteCond %{ENV:GEOIP_COUNTRY_CODE} ^CO$ 
+    RewriteRule ^(.*)$ /Allow-CO [L]
 
-lo de --net:host, solo fucnionaria en linux
+    # USA
+    RewriteCond %{ENV:GEOIP_COUNTRY_CODE} ^US$ 
+    RewriteRule ^(.*)$ https://another.com [L]
 
-(base) hordiaMac16:apache-docker hordia$ docker run -dit --name my-apache-geo -p 8080:80 --net="host" my-apache2
-WARNING: Published ports are discarded when using host network mode
-a3e50ad18ebf2d956746befd72144944b02fbdb5f724ed5e46167fdd6e184bfa
+    # Resto del mundo que no sea ni AR, ni CO
+    RewriteCond %{ENV:GEOIP_COUNTRY_CODE} !^[AR|CO]$
+    RewriteRule ^(.*)$ /Allow-ALL [L]
+
+    </IfModule>
+    j
+    <IfModule mod_geoip.c>
+    RewriteEngine off
+
+    SetEnvIf GEOIP_COUNTRY_CODE AR BlockCountry
+    Deny from env=BlockCountry
+    </IfModule>
